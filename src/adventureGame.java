@@ -1,5 +1,7 @@
 import jdk.dynalink.StandardNamespace;
+import jdk.swing.interop.SwingInterOpUtils;
 
+import java.sql.SQLOutput;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -60,5 +62,6 @@ public class adventureGame {
                 gameOver = true;
             }
         }
+        System.out.format("President Snow health: %d, Katniss health: %d, potion: %d", presidentSnowHealth, katnissHealth, potion);;
     }
 }
