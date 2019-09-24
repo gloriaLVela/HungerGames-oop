@@ -1,7 +1,4 @@
-import jdk.dynalink.StandardNamespace;
-import jdk.swing.interop.SwingInterOpUtils;
 
-import java.sql.SQLOutput;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,53 +12,75 @@ public class adventureGame {
         boolean gameOver = false;
 
 
-
         int userResponse;
 
         int PresdentSnowsResponse;
 
         Random random = new Random();
-        int potion = random.nextInt(10)+ 1;
+        int potion = random.nextInt(10) + 1;
         System.out.println("Are you ready to start yes or no?");
         String readyToPlay = sc.nextLine();
-        if(!readyToPlay.equalsIgnoreCase("yes")){
+        if (!readyToPlay.equalsIgnoreCase("yes")) {
             System.out.println("See you next time");
             gameOver = true;
         }
+
+        String message;
+
+
         while (!gameOver) {
-            System.out.format("You have %s potions left", potion);
-            System.out.println("\nDo you want to attack or drink a potion? Attack = 1, Potion = 2, Run = 3");
-            userResponse = sc.nextInt();
-            if(userResponse == 3){
+            System.out.format("\nKatniss, you have %s potions left \n", potion);
+            System.out.println("\nDo you want to attack,  drink a potion or run? Attack = 1, Potion = 2, Run = 3");
+            userResponse = getInteger(1,3); //sc.nextInt();
+            if (userResponse == 3) {
                 System.out.println("I'm running!");
                 break;
 
             }
-            if(userResponse == 1){
+            if (userResponse == 1) {
                 shield = random.nextInt(10);
-                if(shield % 2 == 1){
+                if (shield % 2 == 1) {
                     presidentSnowHealth -= 10;
-                    System.out.format("\nAttack was successful, President Snows health %d", presidentSnowHealth);
-                }else {
-                    System.out.format("\nAttack was not successful, President Snows health %d", presidentSnowHealth);
+                    message = "\n Katniss, the attack was successful, ";
+                } else {
+                    message = "\n Ketniss, the attack was not successful, ";
                 }
-            }else {
+                System.out.format("%s President Snows health is %d \n", message,presidentSnowHealth );
+            } else {
                 katnissHealth += 10;
-                potion -=1;
+                potion -= 1;
             }
 
             // President Snow attack
             shield = random.nextInt(10);
-            if(shield % 2 == 1){
-                katnissHealth -=10;
-                System.out.format("\nAttack was successful, Katniss health %d ", katnissHealth);
-            }else {
-                System.out.format("\nAttack was not successful, Katniss health %d ", katnissHealth);
+            if (shield % 2 == 1) {
+                katnissHealth -= 10;
+                message = "\n THis is Katniss, their attack was successful, ";
+            } else {
+                message = "\n THis is Katniss, their attack was not successful, ";
             }
-            if(katnissHealth == 0 || presidentSnowHealth == 0){
+            System.out.format("%s my health is %d \n", message, katnissHealth );
+            if (katnissHealth == 0 || presidentSnowHealth == 0) {
                 gameOver = true;
             }
         }
-        System.out.format("President Snow health: %d, Katniss health: %d, potion: %d", presidentSnowHealth, katnissHealth, potion);;
+        System.out.format("President Snow health: %d, Katniss health: %d, potion: %d \n", presidentSnowHealth, katnissHealth, potion);
+        ;
     }
+
+    public static int getInteger(int min, int max) {
+       // int userInput;
+        Scanner input = new Scanner(System.in);
+        while (!input.hasNextInt()) input.next();
+        int userInput = input.nextInt();
+
+        //* If the input is invalid, prompt the user again.
+        if (userInput >= min && userInput <= max) {
+            return userInput;
+        } else {
+            System.out.format("The number %d is not between %d and %d \n", userInput, min, max);
+            return getInteger(min, max);
+        }
+    }
+
 }
