@@ -9,6 +9,9 @@ public class adventureGame {
         int presidentSnowHealth = 100;
         int katnissHealth = 100;
         int shield = 0;
+        String[] weapons = new String [] {"bow and arrow", "spear", "Awl", "Axe"};
+        int[] weaponsPower = new int [] {10, 15, 5, 8};
+        int choosenWeapon;
         boolean gameOver = false;
 
 
@@ -27,7 +30,6 @@ public class adventureGame {
 
         String message;
 
-
         while (!gameOver) {
             System.out.format("\nKatniss, you have %s potions left \n", potion);
             System.out.println("\nDo you want to attack,  drink a potion or run? Attack = 1, Potion = 2, Run = 3");
@@ -38,12 +40,14 @@ public class adventureGame {
 
             }
             if (userResponse == 1) {
+                System.out.println("Katniss, choose the weapon bow and arrow (1), spear (2), awl (3), axe (4) \n");
+                choosenWeapon = getInteger(1,4);
                 shield = random.nextInt(10);
                 if (shield % 2 == 1) {
-                    presidentSnowHealth -= 10;
+                    presidentSnowHealth -= weaponsPower[choosenWeapon-1];
                     message = "\n Katniss, the attack was successful, ";
                 } else {
-                    message = "\n Ketniss, the attack was not successful, ";
+                    message = "\n Ketniss, even though you use the " + weapons [choosenWeapon] + " they raised the shield and the attack was not successful, ";
                 }
                 System.out.format("%s President Snows health is %d \n", message,presidentSnowHealth );
             } else {
@@ -54,8 +58,9 @@ public class adventureGame {
             // President Snow attack
             shield = random.nextInt(10);
             if (shield % 2 == 1) {
-                katnissHealth -= 10;
-                message = "\n THis is Katniss, their attack was successful, ";
+                choosenWeapon = random.nextInt(4);
+                katnissHealth -= weaponsPower[choosenWeapon-1];;
+                message = "\n THis is Katniss, their attack was successful and they use and the " +  weapons [choosenWeapon]  + ", ";
             } else {
                 message = "\n THis is Katniss, their attack was not successful, ";
             }
