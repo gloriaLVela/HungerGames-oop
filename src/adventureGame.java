@@ -84,8 +84,8 @@ public class adventureGame {
                 /**
                  * Did they raise the shields?
                  */
-                shield = random.nextInt(100);
-                if (shield % 7 == 1) {
+                shield = random.nextInt(10);
+                if (shield % 2 == 0) {
                     presidentSnowHealth -= weaponsPower[choosenWeapon];
                     message = "\nKatniss, the attack was successful, the damage was " + weaponsPower[choosenWeapon];
                 } else {
@@ -128,8 +128,8 @@ public class adventureGame {
              * Katniss may raise her shield on time
              */
 
-            shield = random.nextInt(100);
-            if (shield % 7 == 1) {
+            shield = random.nextInt(10);
+            if (shield % 2 == 0) {
                 choosenWeapon = random.nextInt(currentLevel + 3);
                 katnissHealth -= weaponsPower[choosenWeapon];
                 message = "\nThis is Katniss, their attack was successful, they use and the " + weapons[choosenWeapon] + ", and the damage was " + weaponsPower[choosenWeapon] + " ";
