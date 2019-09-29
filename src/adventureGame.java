@@ -10,12 +10,13 @@ public class adventureGame {
 
         boolean gameOver = false;
 
-        int presidentSnowHealth = 100;
-        int katnissHealth = 100;
+        Villain badGuy = new Villain("President Snow");
+        Hero hero = new Hero("Katniss", random.nextInt(10) + 1);
+
 
         int shield;
         int choosenWeapon;
-        int userResponse;
+        int heroResponse;
         int snowAnswer;
 
         int potion = random.nextInt(10) + 1;
@@ -24,8 +25,8 @@ public class adventureGame {
         String[] weapons = new String[]{"bow and arrow", "spear", "awl", "axe", "bar mace", "baton", "blowgun", "blow torch"};
         int[] weaponsPower = new int[]{10, 15, 5, 8, 5, 3, 6, 20};
 
-        int currentLevel = 1;
-        int currentIteration = 0;
+//        int currentLevel = 1;
+//        int currentIteration = 0;
 
         String message;
 
@@ -50,54 +51,65 @@ public class adventureGame {
             /**
              *  Interaction with Katniss
              */
-            System.out.format("\nKatniss, you have %s potions left \n", potion);
-            System.out.println("\nDo you want to attack,  drink a potion or run? Attack = 1, Potion = 2, Run = 3");
+            System.out.format("\n%s, you have %s potions left \n", hero.getName(), potion);
+            if(hero.getPotionsLeft() >0) {
+                System.out.println("\nDo you want to attack,  drink a potion or run? Attack = 1, Run = 2, Potion = 3");
+                /**
+                 * Get Katniss response
+                 */
+                heroResponse = getInteger(1, 3);
+            } else {
+                System.out.println("\nDo you want to attack,  drink a potion or run? Attack = 1, Run = 2");
+                /**
+                 * Get Katniss response
+                 */
+                heroResponse = getInteger(1, 2);
+            }
 
-            /**
-             * Get Katniss response
-             */
-            userResponse = getInteger(1, 3);
 
             /**
              * Running!!!
              */
-            if (userResponse == 3) {
-                System.out.println("This is Katniss and I decided to run !");
+            if (heroResponse == 2) {
+                System.out.format("This is %s and I decided to run !", hero.getName());
                 break;
 
             }
 
             /**
-             * Katniss attacks
+             * The hero attacks
              */
-            if (userResponse == 1) {
+            if (heroResponse == 1) {
                 /**
                  * Build the weapon list
                  */
-                message = "Katniss, choose the weapon bow and arrow (0), spear (1)";
-                for (var index = 2; (index < weapons.length && index < currentLevel + 3); index++) {
+                message = String.format("%s, choose the weapon bow and arrow (0), spear (1)", hero.getName());
+                for (var index = 2; (index < weapons.length && index < hero.getCurrentLevel() + 3); index++) {
                     message += ", " + weapons[index] + "(" + (index) + ")";
                 }
                 message = message + "\n";
                 System.out.println(message);
-                choosenWeapon = getInteger(0, currentLevel + 3);
+                choosenWeapon = getInteger(0, hero.getCurrentLevel() + 3);
                 /**
                  * Did they raise the shields?
                  */
                 shield = random.nextInt(10);
                 if (shield % 2 == 0) {
-                    presidentSnowHealth -= weaponsPower[choosenWeapon];
+                    badGuy.decreaseLives(weaponsPower[choosenWeapon]);
+                    //presidentSnowHealth -= weaponsPower[choosenWeapon];
                     message = "\nKatniss, the attack was successful, the damage was " + weaponsPower[choosenWeapon];
+                    hero.increaseSucessfullAttackTotal();
+                    hero.increaseLevel();
+
                 } else {
                     message = "\nKetniss, even though you use the " + weapons[choosenWeapon] + " they raised the shield and the attack was not successful, ";
                 }
-                System.out.format(" %s President Snows health is %d \n", message, presidentSnowHealth);
+                System.out.format(" %s President Snows health is %d \n", message, badGuy.getHealthLeft());
             } else {
                 /**
                  * Katniss drinks a potion
                  */
-                katnissHealth += 10;
-                potion -= 1;
+                hero.drinkPotion();
             }
 
             /**
@@ -108,7 +120,7 @@ public class adventureGame {
             /**
              * President Snow can decide to run away if he is almost dead.
              */
-            if (presidentSnowHealth <= 30 && snowAnswer % 23 == 0) {
+            if (badGuy.getHealthLeft() <= 30 && snowAnswer % 23 == 0) {
                 System.out.println("\n====================================================================");
                 System.out.println("President Snow runs away... and he may comeback");
                 System.out.println("====================================================================");
@@ -130,38 +142,33 @@ public class adventureGame {
 
             shield = random.nextInt(10);
             if (shield % 2 == 0) {
-                choosenWeapon = random.nextInt(currentLevel + 3);
-                katnissHealth -= weaponsPower[choosenWeapon];
-                message = "\nThis is Katniss, their attack was successful, they use and the " + weapons[choosenWeapon] + ", and the damage was " + weaponsPower[choosenWeapon] + " ";
+                choosenWeapon = random.nextInt(hero.getCurrentLevel() + 3);
+                hero.decreaseLives(weaponsPower[choosenWeapon]);
+                message = String.format("\nThis is %s, their attack was successful, they use and the %s, and the damage was %d ", hero.getName(), weapons[choosenWeapon], weaponsPower[choosenWeapon]);
+                badGuy.increaseSucessfullAttackTotal();
+                badGuy.increaseLevel();
             } else {
                 message = "\nThis is Katniss, their attack was not successful, ";
             }
-            System.out.format("%s my health is %d \n", message, katnissHealth);
+            System.out.format("%s my health is %d \n", message, hero.getHealthLeft());
 
             /**
              * The game is over when either one's health is below 0
              */
-            if (katnissHealth <= 0 || presidentSnowHealth <= 0) {
+            if (hero.getHealthLeft() <= 0 || badGuy.getHealthLeft() <= 0) {
                 gameOver = true;
-            }
-            /**
-             * Increase the level
-             */
-            currentIteration++;
-            if (currentIteration > 5 && currentLevel < 6) {
-                currentLevel++;
             }
 
             System.out.println("\n====================================================================");
             System.out.println("Feedback to Katniss");
             System.out.println("====================================================================");
         }
-        if (katnissHealth <= 0) {
-            System.out.println("This is president Snow, Katniss is in danger, we may comeback again.");
+        if (hero.getHealthLeft() <= 0) {
+            System.out.format("This is president Snow, %s is in danger, we may comeback again.", hero.getName());
         } else {
             System.out.println("Katniss saved the world again!");
         }
-        System.out.format("President Snow health: %d, Katniss health: %d, potion: %d \n", presidentSnowHealth, katnissHealth, potion);
+        System.out.format("President Snow health: %d, Katniss health: %d, potion: %d \n", badGuy.getHealthLeft(), hero.getHealthLeft(), potion);
         ;
     }
 
